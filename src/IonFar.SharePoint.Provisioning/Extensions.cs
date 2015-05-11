@@ -241,6 +241,188 @@ namespace Microsoft.SharePoint.Client
             return newFolder;
         }
 
+        /// <summary>
+        /// Sets a key/value pair in the web property bag
+        /// </summary>
+        /// <param name="web">Web that will hold the property bag entry</param>
+        /// <param name="key">Key for the property bag entry</param>
+        /// <param name="value">String value for the property bag entry</param>
+        public static void SetPropertyBagValue(this Web web, string key, string value)
+        {
+            SetPropertyBagValueInternal(web, key, value);
+        }
+
+        /// <summary>
+        /// Sets a key/value pair in the web property bag
+        /// </summary>
+        /// <param name="web">Web that will hold the property bag entry</param>
+        /// <param name="key">Key for the property bag entry</param>
+        /// <param name="value">Value for the property bag entry</param>
+        private static void SetPropertyBagValueInternal(Web web, string key, object value)
+        {
+            var props = web.AllProperties;
+
+            // Get the value, if the web properties are already loaded
+            if (props.FieldValues.Count > 0)
+            {
+                props[key] = value;
+            }
+            else
+
+            {
+                // Load the web properties
+                web.Context.Load(props);
+                web.Context.ExecuteQueryRetry();
+
+                props[key] = value;
+            }
+
+            web.Update();
+            web.Context.ExecuteQueryRetry();
+        }
+
+        /// <summary>
+        /// Get string typed property bag value. If does not contain, returns given default value.
+        /// </summary>
+        /// <param name="web">Web to read the property bag value from</param>
+        /// <param name="key">Key of the property bag entry to return</param>
+        /// <param name="defaultValue"></param>
+        /// <returns>Value of the property bag entry as string</returns>
+        public static string GetPropertyBagValueString(this Web web, string key, string defaultValue)
+        {
+            object value = GetPropertyBagValueInternal(web, key);
+            if (value != null)
+            {
+                return (string)value;
+            }
+            else
+            {
+                return defaultValue;
+            }
+        }
+
+        /// <summary>
+        /// Type independent implementation of the property getter.
+        /// </summary>
+        /// <param name="web">Web to read the property bag value from</param>
+        /// <param name="key">Key of the property bag entry to return</param>
+        /// <returns>Value of the property bag entry</returns>
+        private static object GetPropertyBagValueInternal(Web web, string key)
+        {
+            var props = web.AllProperties;
+            web.Context.Load(props);
+            web.Context.ExecuteQueryRetry();
+            if (props.FieldValues.ContainsKey(key))
+            {
+                return props.FieldValues[key];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Check if a folder exists with the specified path (relative to the web), and if not creates it (inside a list if necessary)
+        /// </summary>
+        /// <param name="web">Web to check for the specified folder</param>
+        /// <param name="webRelativeUrl">Path to the folder, relative to the web site</param>
+        /// <returns>The existing or newly created folder</returns>
+        /// <remarks>
+        /// <para>
+        /// If the specified path is inside an existing list, then the folder is created inside that list.
+        /// </para>
+        /// <para>
+        /// Any existing folders are traversed, and then any remaining parts of the path are created as new folders.
+        /// </para>
+        /// </remarks>
+        public static Folder EnsureFolderPath(this Web web, string webRelativeUrl)
+        {
+            if (webRelativeUrl == null) { throw new ArgumentNullException("webRelativeUrl"); }
+            if (string.IsNullOrWhiteSpace(webRelativeUrl)) { throw new ArgumentException("Folder_URL_is_required_", "webRelativeUrl"); }
+
+            // Check if folder exists
+            if (!web.IsObjectPropertyInstantiated("ServerRelativeUrl"))
+            {
+                web.Context.Load(web, w => w.ServerRelativeUrl);
+                web.Context.ExecuteQueryRetry();
+            }
+            var folderServerRelativeUrl = web.ServerRelativeUrl + (web.ServerRelativeUrl.EndsWith("/") ? "" : "/") + webRelativeUrl;
+
+            // Check if folder is inside a list
+            var listCollection = web.Lists;
+            web.Context.Load(listCollection, lc => lc.Include(l => l.RootFolder.ServerRelativeUrl));
+            web.Context.ExecuteQueryRetry();
+
+            List containingList = null;
+            foreach (var list in listCollection)
+            {
+                if (folderServerRelativeUrl.StartsWith(list.RootFolder.ServerRelativeUrl, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    containingList = list;
+                    break;
+                }
+            }
+
+            // Start either at the root of the list or web
+            string locationType = null;
+            string rootUrl = null;
+            Folder currentFolder = null;
+            if (containingList == null)
+            {
+                locationType = "Web";
+                currentFolder = web.RootFolder;
+                web.Context.Load(currentFolder, f => f.ServerRelativeUrl);
+                web.Context.ExecuteQueryRetry();
+            }
+            else
+            {
+                locationType = "List";
+                currentFolder = containingList.RootFolder;
+            }
+
+            rootUrl = currentFolder.ServerRelativeUrl;
+
+            // Get remaining parts of the path and split
+            var folderRootRelativeUrl = folderServerRelativeUrl.Substring(currentFolder.ServerRelativeUrl.Length);
+            var childFolderNames = folderRootRelativeUrl.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            var currentCount = 0;
+
+            foreach (var folderName in childFolderNames)
+            {
+                currentCount++;
+
+                // Find next part of the path
+                var folderCollection = currentFolder.Folders;
+                folderCollection.Context.Load(folderCollection);
+                folderCollection.Context.ExecuteQueryRetry();
+                Folder nextFolder = null;
+                foreach (Folder existingFolder in folderCollection)
+                {
+                    if (string.Equals(existingFolder.Name, folderName, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        nextFolder = existingFolder;
+                        break;
+                    }
+                }
+
+                // Or create it
+                if (nextFolder == null)
+                {
+                    var createPath = string.Join("/", childFolderNames, 0, currentCount);
+                    //Log.Info(Constants.LOGGING_SOURCE, CoreResources.FileFolderExtensions_CreateFolder0Under12, createPath, locationType, rootUrl);
+
+                    nextFolder = folderCollection.Add(folderName);
+                    folderCollection.Context.Load(nextFolder);
+                    folderCollection.Context.ExecuteQueryRetry();
+                }
+
+                currentFolder = nextFolder;
+            }
+
+            return currentFolder;
+        }
+
     }
 
     /// <summary>

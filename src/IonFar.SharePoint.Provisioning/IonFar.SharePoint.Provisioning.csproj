@@ -46,6 +46,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Common Files\Microsoft.SharePoint.Client.Taxonomy.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -59,8 +63,10 @@
     <Compile Include="Infrastructure\Constants.cs" />
     <Compile Include="Infrastructure\ILogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ContentTransformer.cs" />
     <Compile Include="Services\ContentTypeDescriptor.cs" />
     <Compile Include="Services\ContentTypeProvisioningService.cs" />
+    <Compile Include="Services\DirectorySync.cs" />
     <Compile Include="Services\FieldDescriptor.cs" />
     <Compile Include="Services\FileUploadService.cs" />
     <Compile Include="Services\IContentTypeProvisioningService.cs" />
@@ -78,6 +84,9 @@
     <Compile Include="Services\TaxonomyProvisioningService.cs" />
     <Compile Include="Services\Taxonomy\NavigationTermInfo.cs" />
     <Compile Include="Services\Taxonomy\TermInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

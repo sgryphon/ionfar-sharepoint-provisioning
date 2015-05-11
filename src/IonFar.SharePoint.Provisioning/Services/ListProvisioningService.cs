@@ -15,20 +15,21 @@ namespace IonFar.SharePoint.Provisioning.Services
             _logger = logger;
         }
 
-        public void CreateList(string listTitle, ListTemplateType listTemplateType, string parentWeb, bool enableContentTypes, bool enableModeration = false)
+        public void CreateList(ListDescriptor listDescriptor)
         {
-            _logger.Information("Creating list '{0}' at '{1}'", listTitle, parentWeb);
+            _logger.Information("Creating list '{0}'", listDescriptor.ListTitle);
 
-            var hostWeb = string.IsNullOrWhiteSpace(parentWeb)
+            var hostWeb = string.IsNullOrWhiteSpace("")
                 ? _clientContext.Site.RootWeb
-                : _clientContext.Site.OpenWeb(parentWeb);
+                : _clientContext.Site.OpenWeb("");
 
             var lists = hostWeb.Lists;
             var listCreationInformation = new ListCreationInformation
             {
-                QuickLaunchOption = QuickLaunchOptions.On,
-                Title = listTitle,
-                TemplateType = (int)listTemplateType
+                Url = listDescriptor.ListUrl,
+                Title = listDescriptor.ListTitle,
+                TemplateType = (int)listDescriptor.ListTemplate,
+                QuickLaunchOption = listDescriptor.OnQuickLaunch ? QuickLaunchOptions.On : QuickLaunchOptions.Off
             };
 
             var list = lists.Add(listCreationInformation);
@@ -36,8 +37,7 @@ namespace IonFar.SharePoint.Provisioning.Services
 
             _clientContext.ExecuteQuery();
 
-            list.ContentTypesEnabled = enableContentTypes;
-            list.EnableModeration = enableModeration;
+            list.ContentTypesEnabled = true;
             list.Update();
             _clientContext.ExecuteQuery();
         }
@@ -45,31 +45,26 @@ namespace IonFar.SharePoint.Provisioning.Services
         public void DeleteList(string listName, string parentWeb)
         {
             _logger.Warning("Deleting list '{0}'", listName);
-
             var hostWeb = string.IsNullOrWhiteSpace(parentWeb)
                 ? _clientContext.Site.RootWeb
                 : _clientContext.Site.OpenWeb(parentWeb);
-
             var listToDelete = hostWeb.Lists.GetByTitle(listName);
             listToDelete.DeleteObject();
-
             _clientContext.ExecuteQuery();
-
             _logger.Information("List '{0}' deleted", listName);
         }
 
-        public void EnsureAssetsLibrary(string parentWeb)
+        public void EnsureSiteAssetsLibrary(string parentWeb)
         {
-            _logger.Information("Creating Assets Library at '{0}'", parentWeb);
+            _logger.Information("Creating Site Assets Library at {0}", string.IsNullOrWhiteSpace(parentWeb) ? "Root Web" : parentWeb);
 
-            var hostWeb = string.IsNullOrWhiteSpace(parentWeb)
-                ? _clientContext.Site.RootWeb
-                : _clientContext.Site.OpenWeb(parentWeb);
+            var hostWeb = _clientContext.Web;
 
             var lists = hostWeb.Lists;
             _clientContext.Load(lists);
 
             lists.EnsureSiteAssetsLibrary();
+            _clientContext.ExecuteQuery();
         }
 
         public void AddContentTypeToList(string listName, string parentWeb, string contentTypeId)
@@ -141,15 +136,14 @@ namespace IonFar.SharePoint.Provisioning.Services
             var defaultView = list.DefaultView;
             foreach (var fieldName in fieldNames)
             {
-                defaultView.ViewFields.Add(fieldName);    
+                defaultView.ViewFields.Add(fieldName);
             }
 
             defaultView.Update();
-
             _clientContext.ExecuteQuery();
-        }
+        }        
 
-        public void RenameField(string listName, string parentWeb,  string originalFieldName, string newFieldName)
+        public void RenameField(string listName, string parentWeb, string originalFieldName, string newFieldName)
         {
             _logger.Information("Renaming field '{1}' to '{2}' in List '{0}'", listName, originalFieldName, newFieldName);
 
@@ -174,5 +168,19 @@ namespace IonFar.SharePoint.Provisioning.Services
             _clientContext.Load(field);
             _clientContext.ExecuteQuery();
         }
+
+        public void EnsureSitePagesLibrary(string parentWeb)
+        {
+            _logger.Information("Creating Site Pages Library at {0}", string.IsNullOrWhiteSpace(parentWeb) ? "Root Web" : parentWeb);
+
+            var hostWeb = _clientContext.Web;
+
+            var lists = hostWeb.Lists;
+            _clientContext.Load(lists);
+
+            lists.EnsureSitePagesLibrary();
+            _clientContext.ExecuteQuery();
+        }
+
     }
 }

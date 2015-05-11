@@ -1,8 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 using IonFar.SharePoint.Provisioning.Infrastructure;
 using Microsoft.SharePoint.Client;
+using System;
 using Microsoft.SharePoint.Client.Taxonomy;
 
 namespace IonFar.SharePoint.Provisioning.Services
@@ -143,8 +143,8 @@ namespace IonFar.SharePoint.Provisioning.Services
             var noteFieldXml = "<Field ID='{" + noteFieldId + "}' Type='Note' DisplayName='" + fieldDisplayName + "_0' Name='" + fieldName +
                 "_0' Group='" + fieldGroup + "' Hidden='TRUE'></Field>";
 
-            var metadataFieldXml = "<Field DisplayName='" + fieldDisplayName + "' Name='" + fieldName + "' Group='" + fieldGroup+ "' Type='TaxonomyFieldTypeMulti' />";
-                
+            var metadataFieldXml = "<Field DisplayName='" + fieldDisplayName + "' Name='" + fieldName + "' Group='" + fieldGroup + "' Type='TaxonomyFieldTypeMulti' />";
+
             var noteField = fields.AddFieldAsXml(noteFieldXml, false, AddFieldOptions.AddToNoContentType);
             var metadataField = fields.AddFieldAsXml(metadataFieldXml, false, AddFieldOptions.AddToNoContentType);
             _clientContext.ExecuteQuery();

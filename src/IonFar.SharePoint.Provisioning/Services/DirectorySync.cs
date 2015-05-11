@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.SharePoint.Client;
 using Newtonsoft.Json;
 using IonFar.SharePoint.Provisioning.Infrastructure;
+using System.Net;
 //using Serilog;
 
 namespace IonFar.SharePoint.Provisioning.Services
@@ -15,14 +16,14 @@ namespace IonFar.SharePoint.Provisioning.Services
     public class DirectorySync
     {
         private const string PropertyBagKey = "SPSync.DirectorySync";
-        private readonly SharePointOnlineCredentials _credentials;
+        private readonly ICredentials _credentials;
         private readonly IDictionary<string, string> _filePathToChecksum;
         private readonly ContentTransformer _contentTransformer;
         private readonly ILogger _logger;
         private readonly Uri _sharepointServer;
         private readonly object _thelock = new object();
 
-        public DirectorySync(Uri sharepointServer, Uri apiServer, SharePointOnlineCredentials credentials, bool reset)
+        public DirectorySync(Uri sharepointServer, Uri apiServer, ICredentials credentials, bool reset)
         {
             _sharepointServer = sharepointServer;
             _credentials = credentials;

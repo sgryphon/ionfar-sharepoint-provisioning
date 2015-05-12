@@ -19,7 +19,7 @@ namespace IonFar.SharePoint.Provisioning.Services
         private readonly ICredentials _credentials;
         private readonly IDictionary<string, string> _filePathToChecksum;
         private readonly ContentTransformer _contentTransformer;
-        private readonly ILogger _logger;
+        private ILogger _logger;
         private readonly Uri _sharepointServer;
         private readonly object _thelock = new object();
 
@@ -27,18 +27,24 @@ namespace IonFar.SharePoint.Provisioning.Services
         {
             _sharepointServer = sharepointServer;
             _credentials = credentials;
-            _filePathToChecksum = reset ? new Dictionary<string, string>() : LoadServerChecksums();
+            // Can't load during constructor as Logger not yet injected.
+            _filePathToChecksum = reset ? new Dictionary<string, string>() : null;
             _contentTransformer = new ContentTransformer(sharepointServer, sharepointServer, apiServer);
         }
 
         public ILogger Logger
         {
-            set { Logger = value; }
+            set { _logger = value; }
         }
 
         public void Execute(string localDirectory, string serverDirectory, bool isAsynchronous)
         {
             if (!Directory.Exists(localDirectory)) throw new ArgumentException(localDirectory + " not found");
+            if (_filePathToChecksum == null)
+            {
+                LoadServerChecksums();
+            }
+
             serverDirectory += serverDirectory.EndsWith("/") ? "" : "/";
             localDirectory += localDirectory.EndsWith("\\") ? "" : "\\";
 
@@ -53,7 +59,10 @@ namespace IonFar.SharePoint.Provisioning.Services
                 }
                 else
                 {
-                    _logger.Information("SPSync {0} {1}", "Up-to-date", path);
+                    if (_logger != null)
+                    {
+                        _logger.Information("SPSync {0} {1}", "Up-to-date", path);
+                    }
                 }
             }
 
@@ -100,19 +109,28 @@ namespace IonFar.SharePoint.Provisioning.Services
                     var dict = list.ToDictionary(kv => kv.Key, kv => kv.Value);
                     if (dict.Count == 0)
                     {
-                        _logger.Warning(PropertyBagKey + " not found in property bag. Prepare for all static files to be deployed.");
+                        if (_logger != null)
+                        {
+                            _logger.Warning(PropertyBagKey + " not found in property bag. Prepare for all static files to be deployed.");
+                        }
                     }
                     else
                     {
-                        _logger.Information("Incremental Deploy enabled using " + PropertyBagKey + " in property bag");
+                        if (_logger != null)
+                        {
+                            _logger.Information("Incremental Deploy enabled using " + PropertyBagKey + " in property bag");
+                        }
                     }
                     return dict;
                 }
             }
             catch (Exception exception)
             {
-                _logger.Error(exception,
+                if (_logger != null)
+                {
+                    _logger.Error(exception,
                     "Incremental Deploy disabled because error reading " + PropertyBagKey + " from property bag");
+                }
                 return new Dictionary<string, string>();
             }
         }
@@ -133,7 +151,10 @@ namespace IonFar.SharePoint.Provisioning.Services
         private void UpdateServerChecksum(string path, string serverRelativePath)
         {
             _filePathToChecksum[serverRelativePath] = LocalChecksum(path);
-            _logger.Information("SPSync {action} {path}", "Uploaded", path);
+            if (_logger != null)
+            {
+                _logger.Information("SPSync {action} {path}", "Uploaded", path);
+            }
         }
 
         private Task UploadAsync(string path, string serverPath)

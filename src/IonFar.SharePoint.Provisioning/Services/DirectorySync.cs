@@ -17,7 +17,7 @@ namespace IonFar.SharePoint.Provisioning.Services
     {
         private const string PropertyBagKey = "SPSync.DirectorySync";
         private readonly ICredentials _credentials;
-        private readonly IDictionary<string, string> _filePathToChecksum;
+        private IDictionary<string, string> _filePathToChecksum;
         private readonly ContentTransformer _contentTransformer;
         private ILogger _logger;
         private readonly Uri _sharepointServer;
@@ -42,7 +42,7 @@ namespace IonFar.SharePoint.Provisioning.Services
             if (!Directory.Exists(localDirectory)) throw new ArgumentException(localDirectory + " not found");
             if (_filePathToChecksum == null)
             {
-                LoadServerChecksums();
+                _filePathToChecksum = LoadServerChecksums();
             }
 
             serverDirectory += serverDirectory.EndsWith("/") ? "" : "/";

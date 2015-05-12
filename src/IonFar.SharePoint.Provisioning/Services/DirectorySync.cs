@@ -153,7 +153,7 @@ namespace IonFar.SharePoint.Provisioning.Services
             _filePathToChecksum[serverRelativePath] = LocalChecksum(path);
             if (_logger != null)
             {
-                _logger.Information("SPSync {action} {path}", "Uploaded", path);
+                _logger.Information("SPSync {0} {1}", "Uploaded", path);
             }
         }
 

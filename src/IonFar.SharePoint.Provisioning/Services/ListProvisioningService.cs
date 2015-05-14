@@ -7,9 +7,9 @@ namespace IonFar.SharePoint.Provisioning.Services
     public class ListProvisioningService : IListProvisioningService
     {
         private readonly ClientContext _clientContext;
-        private readonly ILogger _logger;
+        private readonly IProvisionLog _logger;
 
-        public ListProvisioningService(ClientContext clientContext, ILogger logger)
+        public ListProvisioningService(ClientContext clientContext, IProvisionLog logger)
         {
             _clientContext = clientContext;
             _logger = logger;

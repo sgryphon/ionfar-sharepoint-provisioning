@@ -10,12 +10,12 @@ namespace IonFar.SharePoint.Provisioning.Services
     public class TaxonomyProvisioningService : ITaxonomyProvisioningService
     {
         private readonly ClientContext _clientContext;
-        private readonly ILogger _logger;
+        private readonly IProvisionLog _logger;
         private readonly TaxonomySession _taxonomySession;
         private const int DefaultLcid = 1033;
         public Guid DefaultTermStoreId { get; private set; }
 
-        public TaxonomyProvisioningService(ClientContext clientContext, ILogger logger)
+        public TaxonomyProvisioningService(ClientContext clientContext, IProvisionLog logger)
         {
             _clientContext = clientContext;
             _logger = logger;

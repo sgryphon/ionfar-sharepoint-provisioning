@@ -10,9 +10,9 @@ namespace IonFar.SharePoint.Provisioning.Services
     public class SiteColumnProvisioningService : ISiteColumnProvisioningService
     {
         private readonly ClientContext _clientContext;
-        private readonly ILogger _logger;
+        private readonly IProvisionLog _logger;
 
-        public SiteColumnProvisioningService(ClientContext clientContext, ILogger logger)
+        public SiteColumnProvisioningService(ClientContext clientContext, IProvisionLog logger)
         {
             _clientContext = clientContext;
             _logger = logger;

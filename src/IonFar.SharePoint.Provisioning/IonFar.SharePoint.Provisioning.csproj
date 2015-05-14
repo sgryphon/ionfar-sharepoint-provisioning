@@ -91,8 +91,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Infrastructure\Constants.cs" />
-    <Compile Include="Infrastructure\ILogger.cs" />
+    <Compile Include="Infrastructure\ConsoleProvisionLog.cs" />
+    <Compile Include="Infrastructure\TraceProvisionLog.cs" />
+    <Compile Include="IProvisionLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ContentTypeProvisioningService.cs" />
     <Compile Include="Services\IContentTypeProvisioningService.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="Services\TaxonomyProvisioningService.cs" />
     <Compile Include="Services\Taxonomy\NavigationTermInfo.cs" />
     <Compile Include="Services\Taxonomy\TermInfo.cs" />
+    <Compile Include="WebTemplateId.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -121,11 +123,9 @@
   <PropertyGroup>
     <TFSBaseBuildYear>2015</TFSBaseBuildYear>
   </PropertyGroup>
-  <Import Project="..\TFSBuildNumber.targets"/>
-  <Target Name="BeforeBuild"
-     DependsOnTargets="GetMajorMinorFromCSharpAssemblyInfoFile;WriteProjectTextAssemblyVersionFile;UpdateCSharpAssemblyInfoFile">
+  <Import Project="..\TFSBuildNumber.targets" />
+  <Target Name="BeforeBuild" DependsOnTargets="GetMajorMinorFromCSharpAssemblyInfoFile;WriteProjectTextAssemblyVersionFile;UpdateCSharpAssemblyInfoFile">
   </Target>
-  <Target Name="AfterBuild"
-     DependsOnTargets="ResetCSharpAssemblyInfoFile">
+  <Target Name="AfterBuild" DependsOnTargets="ResetCSharpAssemblyInfoFile">
   </Target>
 </Project>

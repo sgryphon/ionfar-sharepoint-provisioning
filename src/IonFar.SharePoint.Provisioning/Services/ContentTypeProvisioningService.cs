@@ -6,9 +6,9 @@ namespace IonFar.SharePoint.Provisioning.Services
     public class ContentTypeProvisioningService : IContentTypeProvisioningService
     {
         private readonly ClientContext _clientContext;
-        private readonly ILogger _logger;
+        private readonly IProvisionLog _logger;
 
-        public ContentTypeProvisioningService(ClientContext clientContext, ILogger logger)
+        public ContentTypeProvisioningService(ClientContext clientContext, IProvisionLog logger)
         {
             _clientContext = clientContext;
             _logger = logger;

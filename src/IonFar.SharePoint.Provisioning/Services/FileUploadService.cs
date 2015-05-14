@@ -8,11 +8,11 @@ namespace IonFar.SharePoint.Provisioning.Services
     public class FileUploadService : IFileUploadService
     {
         private readonly ClientContext _clientContext;
-        private readonly ILogger _logger;
+        private readonly IProvisionLog _logger;
 
         private readonly string _apiUrl = string.Empty;
         
-        public FileUploadService(ClientContext clientContext, ILogger logger)
+        public FileUploadService(ClientContext clientContext, IProvisionLog logger)
         {
             _clientContext = clientContext;
             _logger = logger;

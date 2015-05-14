@@ -39,9 +39,9 @@ namespace IonFar.SharePoint.Provisioning.Services
     public class SecurityGroupProvisioningService : ISecurityGroupProvisioningService
     {
         private readonly ClientContext _clientContext;
-        private readonly ILogger _logger;
+        private readonly IProvisionLog _logger;
 
-        public SecurityGroupProvisioningService(ClientContext clientContext, ILogger logger)
+        public SecurityGroupProvisioningService(ClientContext clientContext, IProvisionLog logger)
         {
             _clientContext = clientContext;
             _logger = logger;
@@ -108,7 +108,7 @@ namespace IonFar.SharePoint.Provisioning.Services
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "UpdateSecurityGroups(GroupUpdateInformation[] groupUpdateInformations) FAILED!");
+                _logger.Error("UpdateSecurityGroups(GroupUpdateInformation[] groupUpdateInformations) FAILED! Exception: {0}", ex);
             }
         }
 
@@ -153,7 +153,7 @@ namespace IonFar.SharePoint.Provisioning.Services
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "UpdateSecurityGroups(GroupUpdateInformation[] groupUpdateInformations) FAILED!");
+                _logger.Error("UpdateSecurityGroups(GroupUpdateInformation[] groupUpdateInformations) FAILED! Exception: {0}", ex);
             }
         }
 

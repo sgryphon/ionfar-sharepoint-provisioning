@@ -19,7 +19,7 @@ namespace IonFar.SharePoint.Provisioning.Services
         private readonly ICredentials _credentials;
         private IDictionary<string, string> _filePathToChecksum;
         private readonly ContentTransformer _contentTransformer;
-        private ILogger _logger;
+        private IProvisionLog _logger;
         private readonly Uri _sharepointServer;
         private readonly object _thelock = new object();
 
@@ -32,7 +32,7 @@ namespace IonFar.SharePoint.Provisioning.Services
             _contentTransformer = new ContentTransformer(sharepointServer, sharepointServer, apiServer);
         }
 
-        public ILogger Logger
+        public IProvisionLog Logger
         {
             set { _logger = value; }
         }
@@ -128,8 +128,7 @@ namespace IonFar.SharePoint.Provisioning.Services
             {
                 if (_logger != null)
                 {
-                    _logger.Error(exception,
-                    "Incremental Deploy disabled because error reading " + PropertyBagKey + " from property bag");
+                    _logger.Error("Incremental Deploy disabled because error reading '{0}' from property bag: {1}", PropertyBagKey, exception);
                 }
                 return new Dictionary<string, string>();
             }

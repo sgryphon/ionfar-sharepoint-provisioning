@@ -5,9 +5,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("IonFar.SharePoint.Provisioning")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Library of services designed to simplify repetitive tasks using the SharePoint the client side object model (CSOM) for changes to SharePoint.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Jack Watts")]
 [assembly: AssemblyProduct("IonFar.SharePoint.Provisioning")]
 [assembly: AssemblyCopyright("Copyright © Jack Watts 2015")]
 [assembly: AssemblyTrademark("")]

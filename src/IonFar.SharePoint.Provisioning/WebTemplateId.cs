@@ -13,5 +13,6 @@ namespace IonFar.SharePoint.Provisioning
     {
         public const string BlankSite = "STS#1";
         public const string TeamSite = "STS#0";
+        public const string ProjectSite = "PROJECTSITE#0";
     }
 }

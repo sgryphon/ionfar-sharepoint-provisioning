@@ -107,6 +107,8 @@
     <Compile Include="Services\TaxonomyProvisioningService.cs" />
     <Compile Include="Services\Taxonomy\NavigationTermInfo.cs" />
     <Compile Include="Services\Taxonomy\TermInfo.cs" />
+    <Compile Include="SiteFeatureId.cs" />
+    <Compile Include="WebFeatureId.cs" />
     <Compile Include="WebTemplateId.cs" />
   </ItemGroup>
   <ItemGroup>

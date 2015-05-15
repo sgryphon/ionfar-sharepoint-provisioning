@@ -58,7 +58,7 @@ namespace IonFar.SharePoint.Provisioning.Services
                 UseSamePermissionsAsParentSite = inheritPermissions                
             };
 
-            var newWeb = _clientContext.Web.Webs.Add(webCreationInformation);
+            var newWeb = parentWeb.Webs.Add(webCreationInformation);
             _clientContext.ExecuteQuery();
 
             if (inheritNavigation)

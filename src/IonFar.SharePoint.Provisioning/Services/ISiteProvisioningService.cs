@@ -1,9 +1,40 @@
 ﻿using Microsoft.SharePoint.Client;
+using System;
 
 namespace IonFar.SharePoint.Provisioning.Services
 {
     public interface ISiteProvisioningService
     {
+        /// <summary>
+        /// Activates the given feature
+        /// </summary>
+        /// <param name="site">Site to acivate feature for</param>
+        /// <param name="featureId">ID of the feature</param>
+        void ActivateFeature(Site site, Guid featureId);
+
+        /// <summary>
+        /// Activates the given feature
+        /// </summary>
+        /// <param name="web">Web to acivate feature for</param>
+        /// <param name="featureId">ID of the feature</param>
+        void ActivateFeature(Web web, Guid featureId);
+
+        /// <summary>
+        /// Activates the given feature
+        /// </summary>
+        /// <param name="site">Site to acivate feature for</param>
+        /// <param name="featureId">ID of the feature</param>
+        /// <param name="scope">Scope of the definition (Farm for built in, Site for sandboxed)</param>
+        void ActivateFeature(Site site, Guid featureId, FeatureDefinitionScope definitionScope);
+
+        /// <summary>
+        /// Activates the given feature
+        /// </summary>
+        /// <param name="web">Web to acivate feature for</param>
+        /// <param name="featureId">ID of the feature</param>
+        /// <param name="scope">Scope of the definition (Farm for built in, Site for sandboxed)</param>
+        void ActivateFeature(Web web, Guid featureId, FeatureDefinitionScope definitionScope);
+
         /// <summary>
         /// Creates a new subweb with the specified properties.
         /// </summary>

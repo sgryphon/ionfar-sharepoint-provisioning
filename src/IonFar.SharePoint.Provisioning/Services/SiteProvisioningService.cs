@@ -2,6 +2,7 @@
 using Microsoft.SharePoint.Client;
 using Microsoft.SharePoint.Client.Publishing.Navigation;
 using Microsoft.SharePoint.Client.Taxonomy;
+using System;
 
 namespace IonFar.SharePoint.Provisioning.Services
 {
@@ -19,6 +20,52 @@ namespace IonFar.SharePoint.Provisioning.Services
         {
             _clientContext = clientContext;
             _logger = logger ?? new TraceProvisionLog();
+        }
+
+        /// <summary>
+        /// Activates the given feature
+        /// </summary>
+        /// <param name="site">Site to acivate feature for</param>
+        /// <param name="featureId">ID of the feature</param>
+        public void ActivateFeature(Site site, Guid featureId)
+        {
+            ActivateFeature(site, featureId, FeatureDefinitionScope.Farm);
+        }
+
+        /// <summary>
+        /// Activates the given feature
+        /// </summary>
+        /// <param name="web">Web to acivate feature for</param>
+        /// <param name="featureId">ID of the feature</param>
+        public void ActivateFeature(Web web, Guid featureId)
+        {
+            ActivateFeature(web, featureId, FeatureDefinitionScope.Farm);
+        }
+
+        /// <summary>
+        /// Activates the given feature
+        /// </summary>
+        /// <param name="site">Site to acivate feature for</param>
+        /// <param name="featureId">ID of the feature</param>
+        /// <param name="scope">Scope of the definition (Farm for built in, Site for sandboxed)</param>
+        public void ActivateFeature(Site site, Guid featureId, FeatureDefinitionScope definitionScope)
+        {
+            _clientContext.Load(site.Features);
+            _clientContext.ExecuteQuery();
+            InternalActivateFeature(site.Features, featureId, definitionScope, true);
+        }
+
+        /// <summary>
+        /// Activates the given feature
+        /// </summary>
+        /// <param name="web">Web to acivate feature for</param>
+        /// <param name="featureId">ID of the feature</param>
+        /// <param name="scope">Scope of the definition (Farm for built in, Site for sandboxed)</param>
+        public void ActivateFeature(Web web, Guid featureId, FeatureDefinitionScope definitionScope)
+        {
+            _clientContext.Load(web.Features);
+            _clientContext.ExecuteQuery();
+            InternalActivateFeature(web.Features, featureId, definitionScope, true);
         }
 
         /// <summary>
@@ -87,6 +134,19 @@ namespace IonFar.SharePoint.Provisioning.Services
             web.DeleteObject();
 
             _clientContext.ExecuteQuery();
+        }
+
+        private void InternalActivateFeature(FeatureCollection featureCollection, Guid featureId, FeatureDefinitionScope definitionScope, bool activate)
+        {
+            if (activate)
+            {
+                featureCollection.Add(featureId, true, definitionScope);
+                _clientContext.ExecuteQuery();
+            }
+            else
+            {
+                throw new NotImplementedException("Feature deactivation not supported");
+            }
         }
     }
 }

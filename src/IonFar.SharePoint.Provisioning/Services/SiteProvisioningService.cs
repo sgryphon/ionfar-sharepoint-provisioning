@@ -50,8 +50,10 @@ namespace IonFar.SharePoint.Provisioning.Services
         /// <param name="scope">Scope of the definition (Farm for built in, Site for sandboxed)</param>
         public void ActivateFeature(Site site, Guid featureId, FeatureDefinitionScope definitionScope)
         {
+            _clientContext.Load(site);
             _clientContext.Load(site.Features);
             _clientContext.ExecuteQuery();
+            _logger.Information("Activating feature {0} in site '{1}", featureId, site.ServerRelativeUrl);
             InternalActivateFeature(site.Features, featureId, definitionScope, true);
         }
 
@@ -63,8 +65,10 @@ namespace IonFar.SharePoint.Provisioning.Services
         /// <param name="scope">Scope of the definition (Farm for built in, Site for sandboxed)</param>
         public void ActivateFeature(Web web, Guid featureId, FeatureDefinitionScope definitionScope)
         {
+            _clientContext.Load(web);
             _clientContext.Load(web.Features);
             _clientContext.ExecuteQuery();
+            _logger.Information("Activating feature {0} in web '{1}", featureId, web.ServerRelativeUrl);
             InternalActivateFeature(web.Features, featureId, definitionScope, true);
         }
 

@@ -6,6 +6,9 @@ using System;
 
 namespace IonFar.SharePoint.Provisioning.Services
 {
+    /// <summary>
+    /// Service for managing subwebs and features.
+    /// </summary>
     public class SiteProvisioningService : ISiteProvisioningService
     {
         private readonly ClientContext _clientContext;

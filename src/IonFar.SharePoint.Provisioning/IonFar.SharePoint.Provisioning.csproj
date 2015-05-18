@@ -98,11 +98,9 @@
     <Compile Include="Services\ContentTypeProvisioningService.cs" />
     <Compile Include="Services\IContentTypeProvisioningService.cs" />
     <Compile Include="Services\IListProvisioningService.cs" />
-    <Compile Include="Services\ISiteColumnProvisioningService.cs" />
     <Compile Include="Services\ISiteProvisioningService.cs" />
     <Compile Include="Services\ITaxonomyProvisioningService.cs" />
     <Compile Include="Services\ListProvisioningService.cs" />
-    <Compile Include="Services\SiteColumnProvisioningService.cs" />
     <Compile Include="Services\SiteProvisioningService.cs" />
     <Compile Include="Services\TaxonomyProvisioningService.cs" />
     <Compile Include="Services\Taxonomy\NavigationTermInfo.cs" />

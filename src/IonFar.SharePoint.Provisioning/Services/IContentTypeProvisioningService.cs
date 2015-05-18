@@ -6,30 +6,148 @@ namespace IonFar.SharePoint.Provisioning.Services
 {
     public interface IContentTypeProvisioningService
     {
-
+        /// <summary>
+        /// Adds a site column field to a site content type (in the context web)
+        /// </summary>
+        /// <param name="contentTypeId">Content type</param>
+        /// <param name="fieldInternalNameOrTitle">Internal name, or title, of the site column</param>
         void AddFieldLinkToContentType(string contentTypeId, string fieldInternalNameOrTitle);
 
+        /// <summary>
+        /// Creates a site column of type choice (a subtype of multi choice)
+        /// </summary>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
+        /// <param name="choices">Array of string choices</param>
+        /// <param name="format">Format the field is displayed, e.g. drop down list</param>
+        /// <param name="defaultValue">(Optional) default value of the field</param>
+        /// <returns>The created field</returns>
         FieldMultiChoice CreateChoiceField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, string[] choices, ChoiceFormatType format, string defaultValue = null);
 
+        /// <summary>
+        /// Creats a site content type (in the context web)
+        /// </summary>
+        /// <param name="contentTypeName">Name of the conten type</param>
+        /// <param name="contentTypeDescription">Description of the content type</param>
+        /// <param name="contentTypeGroup">Group the site content type should appear in</param>
+        /// <param name="contentTypeId">ID of the content type; this also determines the parent and inheritance hierarchy</param>
+        /// <returns>The created content type</returns>
         ContentType CreateContentType(string contentTypeName, string contentTypeDescription, string contentTypeGroup, string contentTypeId);
 
+        /// <summary>
+        /// Creates a site column of type currency
+        /// </summary>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="description">Description of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
+        /// <param name="numberOfDecimalPlaces">Number of decimal places in the field</param>
+        /// <returns>The created field</returns>
         FieldCurrency CreateCurrencyField(string fieldName, string fieldDisplayName, string description, string fieldGroup, bool isRequired, bool isHidden, int numberOfDecimalPlaces);
 
+        /// <summary>
+        /// Creates a site column of type DateTime
+        /// </summary>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
+        /// <param name="isDateOnly">true if the field is date only; false for date and time</param>
+        /// <param name="defaultValue">default value forumla, e.g. "[Today]"</param>
+        /// <returns>The created field</returns>
         FieldDateTime CreateDateField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, bool isDateOnly, string defaultValue = null);
 
+        /// <summary>
+        /// Creates a site column of type URL, representing a link
+        /// </summary>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
+        /// <returns>The created field</returns>
         FieldUrl CreateHyperlinkField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden);
 
+        /// <summary>
+        /// Creates a site column of type URL, representing an image
+        /// </summary>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
+        /// <returns>The created field</returns>
         FieldUrl CreateImageField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden);
 
+        /// <summary>
+        /// Creates a site column of type Lookup
+        /// </summary>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
+        /// <param name="lookupListTitle">Title of the lookup list (in the context web)</param>
+        /// <param name="lookupFieldInternalName">Name of the field in the lookup list to display</param>
+        /// <param name="allowMultipleValues">true to allow multiple values</param>
+        /// <returns>The created field</returns>
         FieldLookup CreateLookupField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, string lookupListTitle, string lookupFieldInternalName, bool allowMultipleValues);
 
+        /// <summary>
+        /// Creates a site column of type managed metadata, as well as the associated hidden note field
+        /// </summary>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
+        /// <param name="allowMultipleValues">true to allow multiple values</param>
+        /// <param name="termStoreId">ID of the term store to get values from</param>
+        /// <param name="termSetId">ID of the term set to get values from</param>
+        /// <param name="isOpen">true if the term set is open and values can be added</param>
+        /// <returns>The created field</returns>
         TaxonomyField CreateManagedMetadataField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, bool allowMultipleValues, Guid termStoreId, Guid termSetId, bool isOpen);
 
+        /// <summary>
+        /// Creates a site column of type multiple lines of text
+        /// </summary>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
+        /// <returns>The created field</returns>
         FieldMultiLineText CreateNoteField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden);
 
+        /// <summary>
+        /// Creates a site column of type single line of text
+        /// </summary>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="description">Description of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
+        /// <returns>The created field</returns>
         FieldText CreateTextField(string fieldName, string fieldDisplayName, string description, string fieldGroup, bool isRequired, bool isHidden);
 
-        FieldUser CreateUserField(string fieldName, string fieldDisplayName, string fieldGroup, FieldUserSelectionMode userSelectionMode, bool isRequired, bool isHidden);
+        /// <summary>
+        /// Creates a site column of type User
+        /// </summary>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
+        /// <param name="userSelectionMode">Whether to select people only, or people and groups</param>
+        /// <returns>The created field</returns>
+        FieldUser CreateUserField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, FieldUserSelectionMode userSelectionMode);
 
         // FieldCalculated
         // FieldChoice
@@ -39,10 +157,22 @@ namespace IonFar.SharePoint.Provisioning.Services
         // FieldNumber
         // FieldRatingScale
 
+        /// <summary>
+        /// Deletes the specified content type
+        /// </summary>
+        /// <param name="contentTypeId">ID of the content type</param>
         void DeleteContentType(string contentTypeId);
 
-        void DeleteField(string fieldName);
+        /// <summary>
+        /// Deletes the specified site column
+        /// </summary>
+        /// <param name="fieldInternalNameOrTitle">Internal name, or title, of the site column</param>
+        void DeleteField(string fieldInternalNameOrTitle);
 
+        /// <summary>
+        /// Deletes all site columns in the specified group
+        /// </summary>
+        /// <param name="groupName">Name of the group to delete</param>
         void DeleteFieldsInGroup(string groupName);
     }
 }

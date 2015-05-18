@@ -7,17 +7,30 @@ using Microsoft.SharePoint.Client.Taxonomy;
 
 namespace IonFar.SharePoint.Provisioning.Services
 {
+    /// <summary>
+    /// Service for managing site content types and site columns.
+    /// </summary>
     public class ContentTypeProvisioningService : IContentTypeProvisioningService
     {
         private readonly ClientContext _clientContext;
         private readonly IProvisionLog _logger;
 
+        /// <summary>
+        /// Creates a new content type provisioning service
+        /// </summary>
+        /// <param name="clientContext">Context to use</param>
+        /// <param name="logger">(Optional) logger to use; if not specified defaults to TraceSource</param>
         public ContentTypeProvisioningService(ClientContext clientContext, IProvisionLog logger = null)
         {
             _clientContext = clientContext;
             _logger = logger ?? new TraceProvisionLog();
         }
 
+        /// <summary>
+        /// Adds a site column field to a site content type (in the context web)
+        /// </summary>
+        /// <param name="contentTypeId">Content type</param>
+        /// <param name="fieldInternalNameOrTitle">Internal name, or title, of the site column</param>
         public void AddFieldLinkToContentType(string contentTypeId, string fieldInternalNameOrTitle)
         {
             _logger.Information("Adding field '{0}' to content type id '{1}'", fieldInternalNameOrTitle, contentTypeId);
@@ -43,6 +56,18 @@ namespace IonFar.SharePoint.Provisioning.Services
             _clientContext.ExecuteQuery();
         }
 
+        /// <summary>
+        /// Creates a site column of type choice (a subtype of multi choice)
+        /// </summary>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
+        /// <param name="choices">Array of string choices</param>
+        /// <param name="format">Format the field is displayed, e.g. drop down list</param>
+        /// <param name="defaultValue">(Optional) default value of the field</param>
+        /// <returns>The created field</returns>
         public FieldMultiChoice CreateChoiceField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, string[] choices, ChoiceFormatType format, string defaultValue = null)
         {
             _logger.Information("Provisioning choice field '{0}' to field group '{1}'", fieldName, fieldGroup);
@@ -69,6 +94,14 @@ namespace IonFar.SharePoint.Provisioning.Services
             return (FieldMultiChoice)createdField;
         }
 
+        /// <summary>
+        /// Creats a site content type (in the context web)
+        /// </summary>
+        /// <param name="contentTypeName">Name of the conten type</param>
+        /// <param name="contentTypeDescription">Description of the content type</param>
+        /// <param name="contentTypeGroup">Group the site content type should appear in</param>
+        /// <param name="contentTypeId">ID of the content type; this also determines the parent and inheritance hierarchy</param>
+        /// <returns>The created content type</returns>
         public ContentType CreateContentType(string contentTypeName, string contentTypeDescription, string contentTypeGroup, string contentTypeId)
         {
             _logger.Information("Creating Content Type '{0}' in group '{1}'", contentTypeName, contentTypeGroup);
@@ -94,6 +127,17 @@ namespace IonFar.SharePoint.Provisioning.Services
             return createdContentType;
         }
 
+        /// <summary>
+        /// Creates a site column of type currency
+        /// </summary>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="description">Description of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
+        /// <param name="numberOfDecimalPlaces">Number of decimal places in the field</param>
+        /// <returns>The created field</returns>
         public FieldCurrency CreateCurrencyField(string fieldName, string fieldDisplayName, string description, string fieldGroup, bool isRequired, bool isHidden,
             int numberOfDecimalPlaces = 2)
         {
@@ -112,6 +156,17 @@ namespace IonFar.SharePoint.Provisioning.Services
             return (FieldCurrency)createdField;
         }
 
+        /// <summary>
+        /// Creates a site column of type DateTime
+        /// </summary>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
+        /// <param name="isDateOnly">true if the field is date only; false for date and time</param>
+        /// <param name="defaultValue">default value forumla, e.g. "[Today]"</param>
+        /// <returns>The created field</returns>
         public FieldDateTime CreateDateField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, bool isDateOnly, string defaultValue = null)
         {
             _logger.Information("Provisioning date field '{0}' to field group '{1}'", fieldName, fieldGroup);
@@ -131,6 +186,15 @@ namespace IonFar.SharePoint.Provisioning.Services
             return (FieldDateTime)createdField;
         }
 
+        /// <summary>
+        /// Creates a site column of type URL, representing a link
+        /// </summary>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
+        /// <returns>The created field</returns>
         public FieldUrl CreateHyperlinkField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired,
             bool isHidden)
         {
@@ -149,6 +213,15 @@ namespace IonFar.SharePoint.Provisioning.Services
             return (FieldUrl)createdField;
         }
 
+        /// <summary>
+        /// Creates a site column of type URL, representing an image
+        /// </summary>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
+        /// <returns>The created field</returns>
         public FieldUrl CreateImageField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden)
         {
             _logger.Information("Provisioning image field '{0}' to field group '{1}'", fieldName, fieldGroup);
@@ -167,6 +240,18 @@ namespace IonFar.SharePoint.Provisioning.Services
             return (FieldUrl)createdField;
         }
 
+        /// <summary>
+        /// Creates a site column of type Lookup
+        /// </summary>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
+        /// <param name="lookupListTitle">Title of the lookup list (in the context web)</param>
+        /// <param name="lookupFieldInternalName">Name of the field in the lookup list to display</param>
+        /// <param name="allowMultipleValues">true to allow multiple values</param>
+        /// <returns>The created field</returns>
         public FieldLookup CreateLookupField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, string lookupListTitle, string lookupFieldInternalName, bool allowMultipleValues)
         {
             _logger.Information("Provisioning lookup field '{0}' to field group '{1}'", fieldName, fieldGroup);
@@ -194,6 +279,19 @@ namespace IonFar.SharePoint.Provisioning.Services
             return (FieldLookup)createdField;
         }
 
+        /// <summary>
+        /// Creates a site column of type managed metadata, as well as the associated hidden note field
+        /// </summary>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
+        /// <param name="allowMultipleValues">true to allow multiple values</param>
+        /// <param name="termStoreId">ID of the term store to get values from</param>
+        /// <param name="termSetId">ID of the term set to get values from</param>
+        /// <param name="isOpen">true if the term set is open and values can be added</param>
+        /// <returns>The created field</returns>
         public TaxonomyField CreateManagedMetadataField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, bool allowMultipleValues, Guid termStoreId, Guid termSetId, bool isOpen)
         {
             _logger.Information("Provisioning managed metadata field '{0}' to field group '{1}'", fieldName, fieldGroup);
@@ -225,6 +323,15 @@ namespace IonFar.SharePoint.Provisioning.Services
             return taxonomyField;
         }
 
+        /// <summary>
+        /// Creates a site column of type multiple lines of text
+        /// </summary>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
+        /// <returns>The created field</returns>
         public FieldMultiLineText CreateNoteField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden)
         {
             _logger.Information("Provisioning note field '{0}' to field group '{1}'", fieldName, fieldGroup);
@@ -242,6 +349,16 @@ namespace IonFar.SharePoint.Provisioning.Services
             return (FieldMultiLineText)createdField;
         }
 
+        /// <summary>
+        /// Creates a site column of type single line of text
+        /// </summary>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="description">Description of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
+        /// <returns>The created field</returns>
         public FieldText CreateTextField(string fieldName, string fieldDisplayName, string description, string fieldGroup, bool isRequired, bool isHidden)
         {
             _logger.Information("Provisioning text field '{0}' to field group '{1}'", fieldName, fieldGroup);
@@ -259,7 +376,17 @@ namespace IonFar.SharePoint.Provisioning.Services
             return (FieldText)createdField;
         }
 
-        public FieldUser CreateUserField(string fieldName, string fieldDisplayName, string fieldGroup, FieldUserSelectionMode userSelectionMode, bool isRequired, bool isHidden)
+        /// <summary>
+        /// Creates a site column of type User
+        /// </summary>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
+        /// <param name="userSelectionMode">Whether to select people only, or people and groups</param>
+        /// <returns>The created field</returns>
+        public FieldUser CreateUserField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, FieldUserSelectionMode userSelectionMode)
         {
             _logger.Information("Provisioning user field '{0}' to field group '{1}'", fieldName, fieldGroup);
 
@@ -276,6 +403,10 @@ namespace IonFar.SharePoint.Provisioning.Services
             return (FieldUser)createdField;
         }
 
+        /// <summary>
+        /// Deletes the specified content type
+        /// </summary>
+        /// <param name="contentTypeId">ID of the content type</param>
         public void DeleteContentType(string contentTypeId)
         {
             _logger.Warning("Deleting ContentType '{0}'", contentTypeId);
@@ -290,17 +421,25 @@ namespace IonFar.SharePoint.Provisioning.Services
             _clientContext.ExecuteQuery();
         }
 
-        public void DeleteField(string fieldName)
+        /// <summary>
+        /// Deletes the specified site column
+        /// </summary>
+        /// <param name="fieldInternalNameOrTitle">Internal name, or title, of the site column</param>
+        public void DeleteField(string fieldInternalNameOrTitle)
         {
-            _logger.Warning("Deleting field '{0}'", fieldName);
+            _logger.Warning("Deleting field '{0}'", fieldInternalNameOrTitle);
 
             var fields = _clientContext.Web.Fields;
-            var field = fields.GetByTitle(fieldName);
+            var field = fields.GetByInternalNameOrTitle(fieldInternalNameOrTitle);
             field.DeleteObject();
 
             _clientContext.ExecuteQuery();
         }
 
+        /// <summary>
+        /// Deletes all site columns in the specified group
+        /// </summary>
+        /// <param name="groupName">Name of the group to delete</param>
         public void DeleteFieldsInGroup(string groupName)
         {
             _logger.Warning("Deleting fields in group '{0}'", groupName);

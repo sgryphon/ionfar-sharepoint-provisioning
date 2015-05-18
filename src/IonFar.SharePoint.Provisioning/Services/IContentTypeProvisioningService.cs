@@ -1,3 +1,6 @@
+using IonFar.SharePoint.Provisioning.Services;
+using System.Collections.Generic;
+
 using Microsoft.SharePoint.Client;
 using Microsoft.SharePoint.Client.Taxonomy;
 using System;
@@ -16,6 +19,7 @@ namespace IonFar.SharePoint.Provisioning.Services
         /// <summary>
         /// Creates a site column of type choice (a subtype of multi choice)
         /// </summary>
+        /// <param name="id">Unique ID of the field</param>
         /// <param name="fieldName">Internal name of the site column</param>
         /// <param name="fieldDisplayName">Display name (title) of the site column</param>
         /// <param name="fieldGroup">Group the site column should appear in</param>
@@ -25,21 +29,22 @@ namespace IonFar.SharePoint.Provisioning.Services
         /// <param name="format">Format the field is displayed, e.g. drop down list</param>
         /// <param name="defaultValue">(Optional) default value of the field</param>
         /// <returns>The created field</returns>
-        FieldMultiChoice CreateChoiceField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, string[] choices, ChoiceFormatType format, string defaultValue = null);
+        FieldMultiChoice CreateChoiceField(Guid id, string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, string[] choices, ChoiceFormatType format, string defaultValue = null);
 
         /// <summary>
         /// Creats a site content type (in the context web)
         /// </summary>
+        /// <param name="contentTypeId">ID of the content type; this also determines the parent and inheritance hierarchy</param>
         /// <param name="contentTypeName">Name of the conten type</param>
         /// <param name="contentTypeDescription">Description of the content type</param>
         /// <param name="contentTypeGroup">Group the site content type should appear in</param>
-        /// <param name="contentTypeId">ID of the content type; this also determines the parent and inheritance hierarchy</param>
         /// <returns>The created content type</returns>
-        ContentType CreateContentType(string contentTypeName, string contentTypeDescription, string contentTypeGroup, string contentTypeId);
+        ContentType CreateContentType(string contentTypeId, string contentTypeName, string contentTypeDescription, string contentTypeGroup);
 
         /// <summary>
         /// Creates a site column of type currency
         /// </summary>
+        /// <param name="id">Unique ID of the field</param>
         /// <param name="fieldName">Internal name of the site column</param>
         /// <param name="fieldDisplayName">Display name (title) of the site column</param>
         /// <param name="description">Description of the site column</param>
@@ -48,11 +53,12 @@ namespace IonFar.SharePoint.Provisioning.Services
         /// <param name="isHidden">true to create a hidden column</param>
         /// <param name="numberOfDecimalPlaces">Number of decimal places in the field</param>
         /// <returns>The created field</returns>
-        FieldCurrency CreateCurrencyField(string fieldName, string fieldDisplayName, string description, string fieldGroup, bool isRequired, bool isHidden, int numberOfDecimalPlaces);
+        FieldCurrency CreateCurrencyField(Guid id, string fieldName, string fieldDisplayName, string description, string fieldGroup, bool isRequired, bool isHidden, int numberOfDecimalPlaces);
 
         /// <summary>
         /// Creates a site column of type DateTime
         /// </summary>
+        /// <param name="id">Unique ID of the field</param>
         /// <param name="fieldName">Internal name of the site column</param>
         /// <param name="fieldDisplayName">Display name (title) of the site column</param>
         /// <param name="fieldGroup">Group the site column should appear in</param>
@@ -61,33 +67,36 @@ namespace IonFar.SharePoint.Provisioning.Services
         /// <param name="isDateOnly">true if the field is date only; false for date and time</param>
         /// <param name="defaultValue">default value forumla, e.g. "[Today]"</param>
         /// <returns>The created field</returns>
-        FieldDateTime CreateDateField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, bool isDateOnly, string defaultValue = null);
+        FieldDateTime CreateDateField(Guid id, string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, bool isDateOnly, string defaultValue = null);
 
         /// <summary>
         /// Creates a site column of type URL, representing a link
         /// </summary>
+        /// <param name="id">Unique ID of the field</param>
         /// <param name="fieldName">Internal name of the site column</param>
         /// <param name="fieldDisplayName">Display name (title) of the site column</param>
         /// <param name="fieldGroup">Group the site column should appear in</param>
         /// <param name="isRequired">true to default the column to be mandatory</param>
         /// <param name="isHidden">true to create a hidden column</param>
         /// <returns>The created field</returns>
-        FieldUrl CreateHyperlinkField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden);
+        FieldUrl CreateHyperlinkField(Guid id, string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden);
 
         /// <summary>
         /// Creates a site column of type URL, representing an image
         /// </summary>
+        /// <param name="id">Unique ID of the field</param>
         /// <param name="fieldName">Internal name of the site column</param>
         /// <param name="fieldDisplayName">Display name (title) of the site column</param>
         /// <param name="fieldGroup">Group the site column should appear in</param>
         /// <param name="isRequired">true to default the column to be mandatory</param>
         /// <param name="isHidden">true to create a hidden column</param>
         /// <returns>The created field</returns>
-        FieldUrl CreateImageField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden);
+        FieldUrl CreateImageField(Guid id, string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden);
 
         /// <summary>
         /// Creates a site column of type Lookup
         /// </summary>
+        /// <param name="id">Unique ID of the field</param>
         /// <param name="fieldName">Internal name of the site column</param>
         /// <param name="fieldDisplayName">Display name (title) of the site column</param>
         /// <param name="fieldGroup">Group the site column should appear in</param>
@@ -97,11 +106,12 @@ namespace IonFar.SharePoint.Provisioning.Services
         /// <param name="lookupFieldInternalName">Name of the field in the lookup list to display</param>
         /// <param name="allowMultipleValues">true to allow multiple values</param>
         /// <returns>The created field</returns>
-        FieldLookup CreateLookupField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, string lookupListTitle, string lookupFieldInternalName, bool allowMultipleValues);
+        FieldLookup CreateLookupField(Guid id, string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, string lookupListTitle, string lookupFieldInternalName, bool allowMultipleValues);
 
         /// <summary>
         /// Creates a site column of type managed metadata, as well as the associated hidden note field
         /// </summary>
+        /// <param name="id">Unique ID of the field</param>
         /// <param name="fieldName">Internal name of the site column</param>
         /// <param name="fieldDisplayName">Display name (title) of the site column</param>
         /// <param name="fieldGroup">Group the site column should appear in</param>
@@ -112,22 +122,24 @@ namespace IonFar.SharePoint.Provisioning.Services
         /// <param name="termSetId">ID of the term set to get values from</param>
         /// <param name="isOpen">true if the term set is open and values can be added</param>
         /// <returns>The created field</returns>
-        TaxonomyField CreateManagedMetadataField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, bool allowMultipleValues, Guid termStoreId, Guid termSetId, bool isOpen);
+        TaxonomyField CreateManagedMetadataField(Guid id, string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, bool allowMultipleValues, Guid termStoreId, Guid termSetId, bool isOpen);
 
         /// <summary>
         /// Creates a site column of type multiple lines of text
         /// </summary>
+        /// <param name="id">Unique ID of the field</param>
         /// <param name="fieldName">Internal name of the site column</param>
         /// <param name="fieldDisplayName">Display name (title) of the site column</param>
         /// <param name="fieldGroup">Group the site column should appear in</param>
         /// <param name="isRequired">true to default the column to be mandatory</param>
         /// <param name="isHidden">true to create a hidden column</param>
         /// <returns>The created field</returns>
-        FieldMultiLineText CreateNoteField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden);
+        FieldMultiLineText CreateNoteField(Guid id, string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden);
 
         /// <summary>
         /// Creates a site column of type single line of text
         /// </summary>
+        /// <param name="id">Unique ID of the field</param>
         /// <param name="fieldName">Internal name of the site column</param>
         /// <param name="fieldDisplayName">Display name (title) of the site column</param>
         /// <param name="description">Description of the site column</param>
@@ -135,11 +147,12 @@ namespace IonFar.SharePoint.Provisioning.Services
         /// <param name="isRequired">true to default the column to be mandatory</param>
         /// <param name="isHidden">true to create a hidden column</param>
         /// <returns>The created field</returns>
-        FieldText CreateTextField(string fieldName, string fieldDisplayName, string description, string fieldGroup, bool isRequired, bool isHidden);
+        FieldText CreateTextField(Guid id, string fieldName, string fieldDisplayName, string description, string fieldGroup, bool isRequired, bool isHidden);
 
         /// <summary>
         /// Creates a site column of type User
         /// </summary>
+        /// <param name="id">Unique ID of the field</param>
         /// <param name="fieldName">Internal name of the site column</param>
         /// <param name="fieldDisplayName">Display name (title) of the site column</param>
         /// <param name="fieldGroup">Group the site column should appear in</param>
@@ -147,7 +160,7 @@ namespace IonFar.SharePoint.Provisioning.Services
         /// <param name="isHidden">true to create a hidden column</param>
         /// <param name="userSelectionMode">Whether to select people only, or people and groups</param>
         /// <returns>The created field</returns>
-        FieldUser CreateUserField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, FieldUserSelectionMode userSelectionMode);
+        FieldUser CreateUserField(Guid id, string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, FieldUserSelectionMode userSelectionMode);
 
         // FieldCalculated
         // FieldChoice

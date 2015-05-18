@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
 using IonFar.SharePoint.Provisioning.Infrastructure;
 using Microsoft.SharePoint.Client;
+using System.Text;
+using System.Linq;
 using Microsoft.SharePoint.Client.Taxonomy;
 
 namespace IonFar.SharePoint.Provisioning.Services
@@ -12,22 +12,22 @@ namespace IonFar.SharePoint.Provisioning.Services
         private readonly ClientContext _clientContext;
         private readonly IProvisionLog _logger;
 
-        public ContentTypeProvisioningService(ClientContext clientContext, IProvisionLog logger)
+        public ContentTypeProvisioningService(ClientContext clientContext, IProvisionLog logger = null)
         {
             _clientContext = clientContext;
-            _logger = logger;
+            _logger = logger ?? new TraceProvisionLog();
         }
 
-        public void AddFieldLinkToContentType(string contentTypeId, string fieldName)
+        public void AddFieldLinkToContentType(string contentTypeId, string fieldInternalNameOrTitle)
         {
-            _logger.Information("Adding field '{0}' to content type id '{1}'", fieldName, contentTypeId);
+            _logger.Information("Adding field '{0}' to content type id '{1}'", fieldInternalNameOrTitle, contentTypeId);
 
             var hostWeb = _clientContext.Site.RootWeb;
 
             var contentTypes = hostWeb.ContentTypes;
             var contentType = contentTypes.GetById(contentTypeId);
 
-            var field = hostWeb.Fields.GetByInternalNameOrTitle(fieldName);
+            var field = hostWeb.Fields.GetByInternalNameOrTitle(fieldInternalNameOrTitle);
 
             _clientContext.Load(contentType);
             _clientContext.Load(field);
@@ -43,7 +43,7 @@ namespace IonFar.SharePoint.Provisioning.Services
             _clientContext.ExecuteQuery();
         }
 
-        public void CreateChoiceField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, string[] choices, ChoiceFormatType format, string defaultValue = null)
+        public FieldMultiChoice CreateChoiceField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, string[] choices, ChoiceFormatType format, string defaultValue = null)
         {
             _logger.Information("Provisioning choice field '{0}' to field group '{1}'", fieldName, fieldGroup);
 
@@ -65,13 +65,15 @@ namespace IonFar.SharePoint.Provisioning.Services
             _clientContext.Load(fields);
             _clientContext.Load(createdField);
             _clientContext.ExecuteQuery();
+
+            return (FieldMultiChoice)createdField;
         }
 
-        public void CreateContentType(string contentTypeName, string contentTypeDescription, string contentTypeGroup, string contentTypeId)
+        public ContentType CreateContentType(string contentTypeName, string contentTypeDescription, string contentTypeGroup, string contentTypeId)
         {
             _logger.Information("Creating Content Type '{0}' in group '{1}'", contentTypeName, contentTypeGroup);
 
-            var hostWeb = _clientContext.Site.RootWeb;
+            var hostWeb = _clientContext.Web;
 
             var contentTypes = hostWeb.ContentTypes;
 
@@ -83,14 +85,16 @@ namespace IonFar.SharePoint.Provisioning.Services
                 Id = contentTypeId
             };
 
-            contentTypes.Add(contentTypeCreationInformation);
+            var createdContentType = contentTypes.Add(contentTypeCreationInformation);
 
             _clientContext.Load(contentTypes);
 
             _clientContext.ExecuteQuery();
+
+            return createdContentType;
         }
 
-        public void CreateCurrencyField(string fieldName, string fieldDisplayName, string description, string fieldGroup, bool isRequired, bool isHidden,
+        public FieldCurrency CreateCurrencyField(string fieldName, string fieldDisplayName, string description, string fieldGroup, bool isRequired, bool isHidden,
             int numberOfDecimalPlaces = 2)
         {
             _logger.Information("Provisioning currency field '{0}' to field group '{1}'", fieldName, fieldGroup);
@@ -101,12 +105,14 @@ namespace IonFar.SharePoint.Provisioning.Services
             var fields = _clientContext.Web.Fields;
             _clientContext.Load(fields);
 
-            fields.AddFieldAsXml(fieldXml, false, AddFieldOptions.AddToNoContentType);
+            var createdField = fields.AddFieldAsXml(fieldXml, false, AddFieldOptions.AddToNoContentType);
 
             _clientContext.ExecuteQuery();
+
+            return (FieldCurrency)createdField;
         }
 
-        public void CreateDateField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, bool isDateOnly, string defaultValue = null)
+        public FieldDateTime CreateDateField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, bool isDateOnly, string defaultValue = null)
         {
             _logger.Information("Provisioning date field '{0}' to field group '{1}'", fieldName, fieldGroup);
 
@@ -121,9 +127,11 @@ namespace IonFar.SharePoint.Provisioning.Services
             _clientContext.Load(fields);
             _clientContext.Load(createdField);
             _clientContext.ExecuteQuery();
+
+            return (FieldDateTime)createdField;
         }
 
-        public void CreateHyperlinkField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired,
+        public FieldUrl CreateHyperlinkField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired,
             bool isHidden)
         {
             _logger.Information("Provisioning Hyperlink field '{0}' to field group '{1}'", fieldName, fieldGroup);
@@ -137,9 +145,11 @@ namespace IonFar.SharePoint.Provisioning.Services
             _clientContext.Load(fields);
             _clientContext.Load(createdField);
             _clientContext.ExecuteQuery();
+
+            return (FieldUrl)createdField;
         }
 
-        public void CreateImageField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden)
+        public FieldUrl CreateImageField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden)
         {
             _logger.Information("Provisioning image field '{0}' to field group '{1}'", fieldName, fieldGroup);
 
@@ -153,13 +163,15 @@ namespace IonFar.SharePoint.Provisioning.Services
             _clientContext.Load(fields);
             _clientContext.Load(createdField);
             _clientContext.ExecuteQuery();
+
+            return (FieldUrl)createdField;
         }
 
-        public void CreateLookupField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, string lookupList, string lookupField, bool allowMultipleValues)
+        public FieldLookup CreateLookupField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, string lookupListTitle, string lookupFieldInternalName, bool allowMultipleValues)
         {
             _logger.Information("Provisioning lookup field '{0}' to field group '{1}'", fieldName, fieldGroup);
 
-            var sourceList = _clientContext.Web.Lists.GetByTitle(lookupList);
+            var sourceList = _clientContext.Web.Lists.GetByTitle(lookupListTitle);
             var web = _clientContext.Web;
             _clientContext.Load(sourceList);
             _clientContext.Load(web);
@@ -171,16 +183,18 @@ namespace IonFar.SharePoint.Provisioning.Services
             var fields = _clientContext.Web.Fields;
 
             var fieldXml = "<Field Type='Lookup' Required='" + isRequired + "' DisplayName='" + fieldDisplayName + "' Name='" + fieldName +
-                "' Group='" + fieldGroup + "' Hidden='" + isHidden + "' List='{" + lookupListId + "}' ShowField='" + lookupField + "' PrependId='TRUE' Mult='" + allowMultipleValues + "' WebId='" + web.Id + "'></Field>";
+                "' Group='" + fieldGroup + "' Hidden='" + isHidden + "' List='{" + lookupListId + "}' ShowField='" + lookupFieldInternalName + "' PrependId='TRUE' Mult='" + allowMultipleValues + "' WebId='" + web.Id + "'></Field>";
 
             var createdField = fields.AddFieldAsXml(fieldXml, false, AddFieldOptions.AddToNoContentType);
 
             _clientContext.Load(fields);
             _clientContext.Load(createdField);
             _clientContext.ExecuteQuery();
+
+            return (FieldLookup)createdField;
         }
 
-        public void CreateManagedMetadataField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, bool allowMultipleValues, Guid termStoreId, Guid termSetId, bool isOpen)
+        public TaxonomyField CreateManagedMetadataField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, bool allowMultipleValues, Guid termStoreId, Guid termSetId, bool isOpen)
         {
             _logger.Information("Provisioning managed metadata field '{0}' to field group '{1}'", fieldName, fieldGroup);
 
@@ -207,9 +221,11 @@ namespace IonFar.SharePoint.Provisioning.Services
             taxonomyField.Update();
 
             _clientContext.ExecuteQuery();
+
+            return taxonomyField;
         }
 
-        public void CreateNoteField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden)
+        public FieldMultiLineText CreateNoteField(string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden)
         {
             _logger.Information("Provisioning note field '{0}' to field group '{1}'", fieldName, fieldGroup);
 
@@ -219,12 +235,14 @@ namespace IonFar.SharePoint.Provisioning.Services
             var fields = _clientContext.Web.Fields;
             _clientContext.Load(fields);
 
-            fields.AddFieldAsXml(fieldXml, false, AddFieldOptions.AddToNoContentType);
+            var createdField = fields.AddFieldAsXml(fieldXml, false, AddFieldOptions.AddToNoContentType);
 
             _clientContext.ExecuteQuery();
+
+            return (FieldMultiLineText)createdField;
         }
 
-        public void CreateTextField(string fieldName, string fieldDisplayName, string description, string fieldGroup, bool isRequired, bool isHidden)
+        public FieldText CreateTextField(string fieldName, string fieldDisplayName, string description, string fieldGroup, bool isRequired, bool isHidden)
         {
             _logger.Information("Provisioning text field '{0}' to field group '{1}'", fieldName, fieldGroup);
 
@@ -234,12 +252,14 @@ namespace IonFar.SharePoint.Provisioning.Services
             var fields = _clientContext.Web.Fields;
             _clientContext.Load(fields);
 
-            fields.AddFieldAsXml(fieldXml, false, AddFieldOptions.AddToNoContentType);
+            var createdField = fields.AddFieldAsXml(fieldXml, false, AddFieldOptions.AddToNoContentType);
 
             _clientContext.ExecuteQuery();
+
+            return (FieldText)createdField;
         }
 
-        public void CreateUserField(string fieldName, string fieldDisplayName, string fieldGroup, FieldUserSelectionMode userSelectionMode, bool isRequired, bool isHidden)
+        public FieldUser CreateUserField(string fieldName, string fieldDisplayName, string fieldGroup, FieldUserSelectionMode userSelectionMode, bool isRequired, bool isHidden)
         {
             _logger.Information("Provisioning user field '{0}' to field group '{1}'", fieldName, fieldGroup);
 
@@ -249,9 +269,11 @@ namespace IonFar.SharePoint.Provisioning.Services
             var fields = _clientContext.Web.Fields;
             _clientContext.Load(fields);
 
-            fields.AddFieldAsXml(fieldXml, false, AddFieldOptions.AddToNoContentType);
+            var createdField = fields.AddFieldAsXml(fieldXml, false, AddFieldOptions.AddToNoContentType);
 
             _clientContext.ExecuteQuery();
+
+            return (FieldUser)createdField;
         }
 
         public void DeleteContentType(string contentTypeId)
@@ -298,5 +320,6 @@ namespace IonFar.SharePoint.Provisioning.Services
             _clientContext.ExecuteQuery();
         }
 
+ 
     }
 }

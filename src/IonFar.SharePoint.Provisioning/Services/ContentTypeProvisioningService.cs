@@ -60,6 +60,36 @@ namespace IonFar.SharePoint.Provisioning.Services
         }
 
         /// <summary>
+        /// Creates a site column of type boolean
+        /// </summary>
+        /// <param name="id">Unique ID of the field</param>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
+        /// <param name="defaultValue">(Optional) default value of the field</param>
+        /// <returns>The created field</returns>
+        public Field CreateBoolField(Guid id, string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, bool? defaultValue = null)
+        {
+            _logger.Information("Provisioning boolean field '{0}' to field group '{1}'", fieldName, fieldGroup);
+
+            var fieldXml = "<Field Type='Boolean' ID='{" + id.ToString() + "}' Required='" + isRequired + "' DisplayName='" + fieldDisplayName + "' Name='" + fieldName +
+                "' Group='" + fieldGroup + "' Hidden='" + isHidden + "'>" +
+                (defaultValue.HasValue ? "<Default>" + (defaultValue.Value ? "1" : "0") + "</Default>" : "") +
+                "</Field>";
+
+            var fields = _clientContext.Web.Fields;
+            _clientContext.Load(fields);
+
+            var createdField = fields.AddFieldAsXml(fieldXml, false, AddFieldOptions.AddToNoContentType);
+
+            _clientContext.ExecuteQuery();
+
+            return createdField;
+        }
+
+        /// <summary>
         /// Creates a site column of type choice (a subtype of multi choice)
         /// </summary>
         /// <param name="id">Unique ID of the field</param>

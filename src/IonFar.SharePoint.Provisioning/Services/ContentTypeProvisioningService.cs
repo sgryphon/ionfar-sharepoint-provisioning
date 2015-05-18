@@ -18,43 +18,6 @@ namespace IonFar.SharePoint.Provisioning.Services
             _logger = logger;
         }
 
-        public void CreateContentType(string contentTypeName, string contentTypeDescription, string contentTypeGroup, string contentTypeId)
-        {
-            _logger.Information("Creating Content Type '{0}' in group '{1}'", contentTypeName, contentTypeGroup);
-
-            var hostWeb = _clientContext.Site.RootWeb;
-
-            var contentTypes = hostWeb.ContentTypes;
-
-            var contentTypeCreationInformation = new ContentTypeCreationInformation
-            {
-                Name = contentTypeName,
-                Description = contentTypeDescription,
-                Group = contentTypeGroup,
-                Id = contentTypeId
-            };
-
-            contentTypes.Add(contentTypeCreationInformation);
-
-            _clientContext.Load(contentTypes);
-
-            _clientContext.ExecuteQuery();
-        }
-
-        public void DeleteContentType(string contentTypeId)
-        {
-            _logger.Warning("Deleting ContentType '{0}'", contentTypeId);
-
-            var hostWeb = _clientContext.Site.RootWeb;
-
-            var contentTypes = hostWeb.ContentTypes;
-            var contentTypeToDelete = contentTypes.GetById(contentTypeId);
-
-            contentTypeToDelete.DeleteObject();
-
-            _clientContext.ExecuteQuery();
-        }
-
         public void AddFieldLinkToContentType(string contentTypeId, string fieldName)
         {
             _logger.Information("Adding field '{0}' to content type id '{1}'", fieldName, contentTypeId);
@@ -101,6 +64,29 @@ namespace IonFar.SharePoint.Provisioning.Services
 
             _clientContext.Load(fields);
             _clientContext.Load(createdField);
+            _clientContext.ExecuteQuery();
+        }
+
+        public void CreateContentType(string contentTypeName, string contentTypeDescription, string contentTypeGroup, string contentTypeId)
+        {
+            _logger.Information("Creating Content Type '{0}' in group '{1}'", contentTypeName, contentTypeGroup);
+
+            var hostWeb = _clientContext.Site.RootWeb;
+
+            var contentTypes = hostWeb.ContentTypes;
+
+            var contentTypeCreationInformation = new ContentTypeCreationInformation
+            {
+                Name = contentTypeName,
+                Description = contentTypeDescription,
+                Group = contentTypeGroup,
+                Id = contentTypeId
+            };
+
+            contentTypes.Add(contentTypeCreationInformation);
+
+            _clientContext.Load(contentTypes);
+
             _clientContext.ExecuteQuery();
         }
 
@@ -264,6 +250,20 @@ namespace IonFar.SharePoint.Provisioning.Services
             _clientContext.Load(fields);
 
             fields.AddFieldAsXml(fieldXml, false, AddFieldOptions.AddToNoContentType);
+
+            _clientContext.ExecuteQuery();
+        }
+
+        public void DeleteContentType(string contentTypeId)
+        {
+            _logger.Warning("Deleting ContentType '{0}'", contentTypeId);
+
+            var hostWeb = _clientContext.Site.RootWeb;
+
+            var contentTypes = hostWeb.ContentTypes;
+            var contentTypeToDelete = contentTypes.GetById(contentTypeId);
+
+            contentTypeToDelete.DeleteObject();
 
             _clientContext.ExecuteQuery();
         }

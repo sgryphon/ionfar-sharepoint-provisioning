@@ -125,7 +125,7 @@ namespace IonFar.SharePoint.Provisioning.Services
             _clientContext.Load(createdField);
             _clientContext.ExecuteQuery();
 
-            return (FieldMultiChoice)createdField;
+            return _clientContext.CastTo<FieldMultiChoice>(createdField);
         }
 
         /// <summary>
@@ -188,7 +188,7 @@ namespace IonFar.SharePoint.Provisioning.Services
 
             _clientContext.ExecuteQuery();
 
-            return (FieldCurrency)createdField;
+            return _clientContext.CastTo<FieldCurrency>(createdField);
         }
 
         /// <summary>
@@ -219,7 +219,7 @@ namespace IonFar.SharePoint.Provisioning.Services
             _clientContext.Load(createdField);
             _clientContext.ExecuteQuery();
 
-            return (FieldDateTime)createdField;
+            return _clientContext.CastTo<FieldDateTime>(createdField);
         }
 
         /// <summary>
@@ -247,7 +247,7 @@ namespace IonFar.SharePoint.Provisioning.Services
             _clientContext.Load(createdField);
             _clientContext.ExecuteQuery();
 
-            return (FieldUrl)createdField;
+            return _clientContext.CastTo<FieldUrl>(createdField);
         }
 
         /// <summary>
@@ -275,7 +275,7 @@ namespace IonFar.SharePoint.Provisioning.Services
             _clientContext.Load(createdField);
             _clientContext.ExecuteQuery();
 
-            return (FieldUrl)createdField;
+            return _clientContext.CastTo<FieldUrl>(createdField);
         }
 
         /// <summary>
@@ -315,7 +315,7 @@ namespace IonFar.SharePoint.Provisioning.Services
             _clientContext.Load(createdField);
             _clientContext.ExecuteQuery();
 
-            return (FieldLookup)createdField;
+            return _clientContext.CastTo<FieldLookup>(createdField);
         }
 
         /// <summary>
@@ -387,7 +387,7 @@ namespace IonFar.SharePoint.Provisioning.Services
 
             _clientContext.ExecuteQuery();
 
-            return (FieldMultiLineText)createdField;
+            return _clientContext.CastTo<FieldMultiLineText>(createdField);
         }
 
         /// <summary>
@@ -415,7 +415,7 @@ namespace IonFar.SharePoint.Provisioning.Services
 
             _clientContext.ExecuteQuery();
 
-            return (FieldText)createdField;
+            return _clientContext.CastTo<FieldText>(createdField);
         }
 
         /// <summary>
@@ -443,7 +443,7 @@ namespace IonFar.SharePoint.Provisioning.Services
 
             _clientContext.ExecuteQuery();
 
-            return (FieldUser)createdField;
+            return _clientContext.CastTo<FieldUser>(createdField);
         }
 
         /// <summary>

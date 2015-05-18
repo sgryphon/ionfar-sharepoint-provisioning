@@ -30,7 +30,7 @@ namespace IonFar.SharePoint.Provisioning.Services
         /// <param name="isHidden">true to create a hidden column</param>
         /// <param name="defaultValue">(Optional) default value of the field</param>
         /// <returns>The created field</returns>
-        Field CreateBoolField(Guid id, string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, bool? defaultValue = null);
+        Field CreateBooleanField(Guid id, string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, bool? defaultValue = null);
 
         /// <summary>
         /// Creates a site column of type choice (a subtype of multi choice)

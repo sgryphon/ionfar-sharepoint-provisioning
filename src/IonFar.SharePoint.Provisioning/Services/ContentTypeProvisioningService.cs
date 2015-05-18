@@ -84,7 +84,7 @@ namespace IonFar.SharePoint.Provisioning.Services
         /// <param name="isHidden">true to create a hidden column</param>
         /// <param name="defaultValue">(Optional) default value of the field</param>
         /// <returns>The created field</returns>
-        public Field CreateBoolField(Guid id, string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, bool? defaultValue = null)
+        public Field CreateBooleanField(Guid id, string fieldName, string fieldDisplayName, string fieldGroup, bool isRequired, bool isHidden, bool? defaultValue = null)
         {
             _logger.Information("Provisioning boolean field '{0}' to field group '{1}'", fieldName, fieldGroup);
 

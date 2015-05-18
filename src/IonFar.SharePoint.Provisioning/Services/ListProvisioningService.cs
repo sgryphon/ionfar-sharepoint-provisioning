@@ -15,13 +15,13 @@ namespace IonFar.SharePoint.Provisioning.Services
             _logger = logger;
         }
 
-        public void CreateList(ListDescriptor listDescriptor)
+        public List CreateList(ListDescriptor listDescriptor)
         {
             _logger.Information("Creating list '{0}'", listDescriptor.ListTitle);
 
-            var hostWeb = string.IsNullOrWhiteSpace("")
+            var hostWeb = string.IsNullOrWhiteSpace(listDescriptor.WebUrl)
                 ? _clientContext.Site.RootWeb
-                : _clientContext.Site.OpenWeb("");
+                : _clientContext.Site.OpenWeb(listDescriptor.WebUrl);
 
             var lists = hostWeb.Lists;
             var listCreationInformation = new ListCreationInformation
@@ -40,6 +40,8 @@ namespace IonFar.SharePoint.Provisioning.Services
             list.ContentTypesEnabled = true;
             list.Update();
             _clientContext.ExecuteQuery();
+
+            return list;
         }
 
         public void DeleteList(string listName, string parentWeb)

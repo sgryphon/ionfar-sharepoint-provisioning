@@ -120,6 +120,7 @@
     <Compile Include="Services\Taxonomy\NavigationTermInfo.cs" />
     <Compile Include="Services\Taxonomy\TermInfo.cs" />
     <Compile Include="SiteFeatureId.cs" />
+    <Compile Include="UrlUtility.cs" />
     <Compile Include="WebFeatureId.cs" />
     <Compile Include="WebTemplateId.cs" />
   </ItemGroup>

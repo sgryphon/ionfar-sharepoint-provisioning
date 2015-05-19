@@ -162,6 +162,20 @@ namespace IonFar.SharePoint.Provisioning.Services
         /// <param name="fieldGroup">Group the site column should appear in</param>
         /// <param name="isRequired">true to default the column to be mandatory</param>
         /// <param name="isHidden">true to create a hidden column</param>
+        /// <param name="decimalPlaces">Number of decimal places to use</param>
+        /// <returns>The created field</returns>
+        FieldNumber CreateNumberField(Guid id, string fieldName, string fieldDisplayName, string description, string fieldGroup, bool isRequired, bool isHidden, int decimalPlaces);
+
+        /// <summary>
+        /// Creates a site column of type single line of text
+        /// </summary>
+        /// <param name="id">Unique ID of the field</param>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="description">Description of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
         /// <returns>The created field</returns>
         FieldText CreateTextField(Guid id, string fieldName, string fieldDisplayName, string description, string fieldGroup, bool isRequired, bool isHidden);
 

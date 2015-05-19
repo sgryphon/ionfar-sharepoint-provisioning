@@ -391,6 +391,35 @@ namespace IonFar.SharePoint.Provisioning.Services
         }
 
         /// <summary>
+        /// Creates a site column of type number
+        /// </summary>
+        /// <param name="id">Unique ID of the field</param>
+        /// <param name="fieldName">Internal name of the site column</param>
+        /// <param name="fieldDisplayName">Display name (title) of the site column</param>
+        /// <param name="description">Description of the site column</param>
+        /// <param name="fieldGroup">Group the site column should appear in</param>
+        /// <param name="isRequired">true to default the column to be mandatory</param>
+        /// <param name="isHidden">true to create a hidden column</param>
+        /// <param name="decimalPlaces">Number of decimal places to use</param>
+        /// <returns>The created field</returns>
+        public FieldNumber CreateNumberField(Guid id, string fieldName, string fieldDisplayName, string description, string fieldGroup, bool isRequired, bool isHidden, int decimalPlaces)
+        {
+            _logger.Information("Provisioning number field '{0}' to field group '{1}'", fieldName, fieldGroup);
+
+            var fieldXml = "<Field Type='Number' ID='{" + id.ToString() + "}' Required='" + isRequired + "' Description='" + description + "' DisplayName='" + fieldDisplayName + "' Name='" + fieldName +
+                "' Group='" + fieldGroup + "' Decimals='" + decimalPlaces + "' Hidden='" + isHidden + "'></Field>";
+
+            var fields = _clientContext.Web.Fields;
+            _clientContext.Load(fields);
+
+            var createdField = fields.AddFieldAsXml(fieldXml, false, AddFieldOptions.AddToNoContentType);
+
+            _clientContext.ExecuteQuery();
+
+            return _clientContext.CastTo<FieldNumber>(createdField);
+        }
+
+        /// <summary>
         /// Creates a site column of type single line of text
         /// </summary>
         /// <param name="id">Unique ID of the field</param>

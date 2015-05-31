@@ -96,14 +96,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions.cs" />
+    <Compile Include="IHashProvider.cs" />
     <Compile Include="Infrastructure\ConsoleProvisionLog.cs" />
+    <Compile Include="Infrastructure\NullHashProvider.cs" />
     <Compile Include="Infrastructure\TraceProvisionLog.cs" />
+    <Compile Include="Infrastructure\WebPropertyHashProvider.cs" />
     <Compile Include="IProvisionLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ContentTransformer.cs" />
     <Compile Include="Services\ContentTypeDescriptor.cs" />
     <Compile Include="Services\ContentTypeProvisioningService.cs" />
-    <Compile Include="Services\DirectorySync.cs" />
     <Compile Include="Services\FieldDescriptor.cs" />
     <Compile Include="Services\FileUploadService.cs" />
     <Compile Include="Services\IContentTypeProvisioningService.cs" />

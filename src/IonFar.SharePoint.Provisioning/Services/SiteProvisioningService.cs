@@ -3,6 +3,7 @@ using Microsoft.SharePoint.Client;
 using Microsoft.SharePoint.Client.Publishing.Navigation;
 using Microsoft.SharePoint.Client.Taxonomy;
 using System;
+using System.Linq;
 
 namespace IonFar.SharePoint.Provisioning.Services
 {
@@ -141,6 +142,72 @@ namespace IonFar.SharePoint.Provisioning.Services
             web.DeleteObject();
 
             _clientContext.ExecuteQuery();
+        }
+
+        /// <summary>
+        /// Creates or updates a site collection ScriptLink reference to a script file, doing nothing if the ScriptLink already exists with the specified values
+        /// </summary>
+        /// <param name="name">Key to identify the ScriptLink</param>
+        /// <param name="scriptPrefixedUrl">URL of the script; may use '~sitecollection/' or '~site/' prefix.</param>
+        /// <param name="sequence">Determines the order the ScriptLink is rendered in</param>
+        /// <returns>The UserCustomAction representing the ScriptLink</returns>
+        public UserCustomAction EnsureSiteScriptLink(string name, string scriptPrefixedUrl, int sequence)
+        {
+            var site = _clientContext.Site;
+            if (!site.IsObjectPropertyInstantiated("UserCustomActions"))
+            {
+                _clientContext.Load(site.UserCustomActions, collection => collection.Include(ca => ca.Name));
+                _clientContext.ExecuteQuery();
+            }
+            var action = site.UserCustomActions.FirstOrDefault(ca => string.Equals(ca.Name, name, StringComparison.InvariantCultureIgnoreCase));
+            if (action == null)
+            {
+                action = site.UserCustomActions.Add();
+                action.Location = "ScriptLink";
+                action.Name = name;
+                action.ScriptSrc = scriptPrefixedUrl;
+                action.Sequence = sequence;
+                action.Update();
+                _logger.Information("Adding ScriptLink '{0}'='{1}'", name, scriptPrefixedUrl);
+                _clientContext.ExecuteQuery();
+            }
+            else
+            {
+                _clientContext.Load(action);
+                _clientContext.ExecuteQuery();
+                bool changed = false;
+                if (action.Location != "ScriptLink")
+                {
+                    action.Location = "ScriptLink";
+                    changed = true;
+                }
+                if (action.Name != name)
+                {
+                    action.Name = name;
+                    changed = true;
+                }
+                if (action.ScriptSrc != scriptPrefixedUrl)
+                {
+                    action.ScriptSrc = scriptPrefixedUrl;
+                    changed = true;
+                }
+                if (action.Sequence != sequence)
+                {
+                    action.Sequence = sequence;
+                    changed = true;
+                }
+                if (changed)
+                {
+                    _logger.Information("Updating ScriptLink '{0}'='{1}'", name, scriptPrefixedUrl);
+                    action.Update();
+                    _clientContext.ExecuteQuery();
+                }
+                else
+                {
+                    _logger.Information("No change for ScriptLink '{0}'", name);
+                }
+            }
+            return action;
         }
 
         private void InternalActivateFeature(FeatureCollection featureCollection, Guid featureId, FeatureDefinitionScope definitionScope, bool activate)

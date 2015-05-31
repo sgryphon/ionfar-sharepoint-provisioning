@@ -59,5 +59,15 @@ namespace IonFar.SharePoint.Provisioning.Services
         Web CreateWeb(Web parentWeb, string leafUrl, string title, string webTemplate, string description, bool inheritPermissions, bool inheritNavigation);
 
         void DeleteWeb(string url);
+
+        /// <summary>
+        /// Creates or updates a site collection ScriptLink reference to a script file, doing nothing if the ScriptLink already exists with the specified values
+        /// </summary>
+        /// <param name="name">Key to identify the ScriptLink</param>
+        /// <param name="scriptPrefixedUrl">URL of the script; may use '~sitecollection/' or '~site/' prefix.</param>
+        /// <param name="sequence">Determines the order the ScriptLink is rendered in</param>
+        /// <returns>The UserCustomAction representing the ScriptLink</returns>
+        UserCustomAction EnsureSiteScriptLink(string name, string scriptPrefixedUrl, int sequence);
+
     }
 }

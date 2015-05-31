@@ -70,8 +70,13 @@ namespace IonFar.SharePoint.Provisioning.Services
                 var segments = folderServerRelativeUrl.Split(new[] { '/' }).ToList();
                 var lastSegment = segments.Last();
                 var parentFolderPath = string.Join("/", segments.Take(segments.Count() - 1));
+
+                // Recurse
                 var parentFolder = EnsureFolder(parentFolderPath);
-                folder = parentFolder.CreateFolder(lastSegment);
+
+                folder = parentFolder.Folders.Add(lastSegment);
+                _clientContext.Load(folder);
+                _clientContext.ExecuteQuery();
             }
             return folder;
         }

@@ -1,12 +1,11 @@
-﻿using System;
+﻿using IonFar.SharePoint.Provisioning.Infrastructure;
+using Microsoft.SharePoint.Client;
+using Microsoft.SharePoint.Client.Taxonomy;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using IonFar.SharePoint.Provisioning.Infrastructure;
-using Microsoft.SharePoint.Client;
 using System.Text;
-using System.Linq;
-using Microsoft.SharePoint.Client.Taxonomy;
 
 namespace IonFar.SharePoint.Provisioning.Services
 {

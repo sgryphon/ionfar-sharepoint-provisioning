@@ -95,7 +95,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions.cs" />
     <Compile Include="IHashProvider.cs" />
     <Compile Include="Infrastructure\ConsoleProvisionLog.cs" />
     <Compile Include="Infrastructure\NullHashProvider.cs" />

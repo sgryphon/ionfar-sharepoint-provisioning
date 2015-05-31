@@ -15,11 +15,16 @@ namespace IonFar.SharePoint.Provisioning.Services
         private readonly IProvisionLog _logger;
 
         private readonly string _apiUrl = string.Empty;
-        
-        public FileUploadService(ClientContext clientContext, IProvisionLog logger)
+
+        /// <summary>
+        /// Creates a new file upload service
+        /// </summary>
+        /// <param name="clientContext">Context to use</param>
+        /// <param name="logger">(Optional) logger to use; if not specified defaults to TraceSource</param>
+        public FileUploadService(ClientContext clientContext, IProvisionLog logger = null)
         {
             _clientContext = clientContext;
-            _logger = logger;
+            _logger = logger ?? new TraceProvisionLog();
         }
 
         /// <summary>

@@ -120,7 +120,7 @@ namespace IonFar.SharePoint.Provisioning
             var last = path1[path1.Length - 1];
             if (last != UrlUtility.UrlSeparatorChar && last != UrlUtility.AltUrlSeparatorChar)
             {
-                combined += "\\";
+                combined += "/";
             }
             combined += path2;
 
